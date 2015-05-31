@@ -20,7 +20,6 @@ module.exports = require('di-ioc').create()
     }
   };
 });
-
 ```
 
 ### app/index.js
@@ -34,7 +33,6 @@ module.exports = require('di-ioc').create()
     console.log('Hello ' + name + '! Here is a random string: ' + random.base64());
   };
 });
-
 ```
 
 
@@ -54,8 +52,6 @@ console.log(randomService.base64());
 
 // Hello World! Here is a random string: dfLGC20CpCJxAZSu+uFp57dlJl0=
 module.exports.app.greet();
-
-
 ```
 
 ## Features
