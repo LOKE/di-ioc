@@ -2,6 +2,10 @@
 
 Dependency injection.
 
+## Installation
+
+`npm install --save https://github.com/aantthony/di-ioc/archive/v1.0.0.tar.gz`
+
 ## Example
 
 ### util/index.js
