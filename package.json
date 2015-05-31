@@ -1,0 +1,31 @@
+{
+  "name": "di-ioc",
+  "version": "1.0.0",
+  "description": "Node.js dependency injection.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "jshintConfig": {
+    "laxcomma": true,
+    "eqeqeq": true,
+    "newcap": true,
+    "undef": true,
+    "node": true,
+    "mocha": true
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aantthony/di-ioc.git"
+  },
+  "author": "Anthony Foster",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/aantthony/di-ioc/issues"
+  },
+  "homepage": "https://github.com/aantthony/di-ioc#readme",
+  "dependencies": {
+    "private": "https://github.com/aantthony/private/archive/v1.0.0.tar.gz"
+  },
+  "devDependencies": {}
+}
