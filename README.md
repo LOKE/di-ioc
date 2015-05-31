@@ -9,8 +9,11 @@ Dependency injection.
 ```js
 module.exports = require('di-ioc').create()
 
+// Start defining a `random` service:
 .define('random', function () {
   var pseudoRandomBytes = require('crypto').pseudoRandomBytes;
+  
+  // The `random` service has one function:
   return {
     base64: function () {
       return pseudoRandomBytes(20).toString('base64');
@@ -25,7 +28,7 @@ module.exports = require('di-ioc').create()
 ```js
 module.exports = require('di-ioc').create()
 
-// Greeting service which uses the random service:
+// Greeting service which uses the random service: (arguments are detected)
 .define('greet', function (random) {
   return function (name) {
     console.log('Hello ' + name + '! Here is a random string: ' + random.base64());
@@ -54,3 +57,12 @@ module.exports.app.greet();
 
 
 ```
+
+## Features
+
+- Export to a standard object which automatically initialises dependencies as needed. This is the object `.init()` creates.
+- Enforce that dependency graph divides into layers. For example, nothing in the 'util' submodule can depend on services in the 'app' submodule, due to the order of definition.
+- Nest components in to hierarchial modules and folders.
+- Instantiate one sub-tree of the hierarchy for testing.
+- Instantiate objects with injected dependencies for unit testing.
+- Define transient objects, using `require('di-ioc').create().transient('serviceName', ...);`.
