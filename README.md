@@ -4,7 +4,7 @@ Dependency injection.
 
 ## Installation
 
-`npm install --save https://github.com/aantthony/di-ioc/archive/v1.0.0.tar.gz`
+`npm install --save https://github.com/aantthony/di-ioc/archive/v1.1.0.tar.gz`
 
 ## Example
 
@@ -16,7 +16,7 @@ module.exports = require('di-ioc').create()
 // Start defining a `random` service:
 .define('random', function () {
   var pseudoRandomBytes = require('crypto').pseudoRandomBytes;
-  
+
   // The `random` service has one function:
   return {
     base64: function () {
