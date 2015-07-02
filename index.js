@@ -102,6 +102,35 @@ Router.prototype.init = function () {
   return instance;
 };
 
+function deepSearch(router, name) {
+  var defs = $private(router).defs;
+  for(var i = 0; i < defs.length; i++) {
+    var def = defs[i];
+    if (def.type === TYPE_INTERFACE) continue;
+    if (def.name === name) return def;
+    if (def.type === TYPE_SUBROUTER) {
+      var subresult = deepSearch(def.factory, name);
+      if (subresult) return subresult;
+    }
+  }
+}
+
+// Methods for testing:
+Router.prototype.factory = function (name) {
+  var def = deepSearch(this, name);
+  return def && function (services) {
+    var args = def.deps.map(function (dep) {
+      return services[dep];
+    });
+    var newInstance = {};
+    return def.factory.apply(newInstance, args) || newInstance;
+  };
+};
+
+Router.prototype.inject = function (name, services) {
+  return this.factory(name)(services);
+};
+
 // Backwards compatibility alias:
 Router.prototype.define = function (name, defn) {
   if (defn instanceof Router) return this.use(name, defn);
