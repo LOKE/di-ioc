@@ -4,7 +4,7 @@ Dependency injection.
 
 ## Installation
 
-`npm install --save https://github.com/aantthony/di-ioc/archive/v1.1.0.tar.gz`
+`npm install --save https://github.com/aantthony/di-ioc/archive/v1.2.0.tar.gz`
 
 ## Example
 
