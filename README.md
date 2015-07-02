@@ -1,10 +1,16 @@
 # di-ioc
 
+[![NPM Version](https://img.shields.io/npm/v/di-ioc.svg)](https://www.npmjs.com/package/di-ioc)
+[![Build Status](https://img.shields.io/travis/aantthony/di-ioc/master.svg)](https://travis-ci.org/aantthony/di-ioc)
+[![Coverage Status](https://img.shields.io/coveralls/aantthony/di-ioc/master.svg)](https://coveralls.io/r/aantthony/di-ioc?branch=master)
+[![NPM Downloads](https://img.shields.io/npm/dm/di-ioc.svg)](https://www.npmjs.com/package/di-ioc)
+[![License](https://img.shields.io/npm/l/di-ioc.svg)](https://www.npmjs.com/package/di-ioc)
+
 Dependency injection.
 
 ## Installation
 
-`npm install --save https://github.com/aantthony/di-ioc/archive/v1.4.0.tar.gz`
+`npm install --save di-ioc`
 
 ## Example
 
@@ -43,9 +49,9 @@ module.exports = require('di-ioc').create()
 ### index.js
 
 ```js
-module.exports = require('di-ioc').create()
-.define('util', require('./util'))
-.define('app',  require('./app'))
+module.exports = require('di-ioc').create(require)
+.use('./util')
+.use('./app')
 
 .init();
 
