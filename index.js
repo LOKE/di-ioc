@@ -31,23 +31,24 @@ function set(router, type, path, factory) {
   Router.prototype[type] = function (path, fn) { set(this, type, path, fn); return this; };
 });
 
-function Interface(def) {
+function Interface(def, longName) {
   this.validate = def.factory;
+  this.longName = longName;
 }
 
-Router.prototype.build = function (getters) {
+Router.prototype.build = function (getters, prefix) {
   var instance = {};
   $private(this).defs.forEach(function (def) {
-    if (def.type === TYPE_SUBROUTER) return instance[def.name] = def.factory.build(getters);
-    if (def.type === TYPE_INTERFACE) return  getters[def.name] = new Interface(def);
-
+    var longName = prefix.concat([def.name]);
+    if (def.type === TYPE_SUBROUTER) return instance[def.name] = def.factory.build(getters, longName);
+    if (def.type === TYPE_INTERFACE) return  getters[def.name] = new Interface(def, longName);
     def.deps.forEach(function (name) {
-      if (!getters[name]) throw new Error('Unknown dependency: ' + name + ' required by ' + def.name); }
+      if (!getters[name]) throw new Error('Unknown dependency: ' + name + ' required by ' + longName.join('.')); }
     );
 
     var existing = getters[def.name];
-    if (existing && !existing instanceof Interface) {
-      throw new Error('Re-definition of service: ' + def.name);
+    if (existing && !(existing instanceof Interface)) {
+      throw new Error('Re-definition of service ' + existing.longName.join('.') + ': ' + longName.join('.'));
     }
 
     var validate = existing && existing.validate;
@@ -56,7 +57,13 @@ Router.prototype.build = function (getters) {
     var get = getters[def.name] = function () {
       if (sharedInstance) return sharedInstance;
 
-      var args = def.deps.map(function (name) { return getters[name](); });
+      var args = def.deps.map(function (name) {
+        var getter = getters[name];
+        if (getter instanceof Interface) {
+          throw new Error('Interface ' + getter.longName.join('.') + ' has no implementation, but is required by ' + longName.join('.'));
+        }
+        return getter();
+      });
 
       var newInstance = {};
       newInstance = def.factory.apply(newInstance, args) || newInstance;
@@ -67,14 +74,20 @@ Router.prototype.build = function (getters) {
 
       if (newInstance.stop) {
         if (def.type === TYPE_TRANSIENT) {
-          throw new Error('Service "' + def.name + '" can\'t have a .stop() method because it is transient.');
+          throw new Error('Service "' + longName.join('.') + '" can\'t have a .stop() method because it is transient.');
         }
         $private(getters).active.push(sharedInstance);
       }
 
-      if (validate) validate(newInstance);
+      if (validate) {
+        if (existing.validate(newInstance) === false) {
+          throw new Error('Service "' + longName.join('.') + '" failed to validate against interface ' + existing.longName.join('.') + '.');
+        }
+      }
       return newInstance;
     };
+
+    get.longName = longName;
 
     Object.defineProperty(instance, def.name, { enumerable : true, get: get});
   });
@@ -90,7 +103,7 @@ Router.prototype.init = function () {
     return { get: function (name) { return state[name](); } };
   };
 
-  var instance = this.build(state);
+  var instance = this.build(state, []);
   instance.stop = function () {
     var results = active.map(function (singletonService) {
       if (singletonService.stop) return singletonService.stop();
