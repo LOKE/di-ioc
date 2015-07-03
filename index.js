@@ -100,7 +100,19 @@ Router.prototype.init = function () {
   $private(state).active = active;
 
   state.ioc = function () {
-    return { get: function (name) { return state[name](); } };
+    return {
+      get    : function (name) { return state[name](); },
+      inject : function (defn, local) {
+        local = local || {};
+        var args = annotate(defn).map(function (name) {
+          if (local[name]) return local[name];
+          if (state[name]) return state[name]();
+          throw new Error('Missing dependency: ' + name);
+        });
+        var newInstance = {};
+        return defn.apply(newInstance, args) || newInstance;
+      }
+    };
   };
 
   var instance = this.build(state, []);
