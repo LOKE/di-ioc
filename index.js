@@ -94,6 +94,7 @@ Router.prototype.build = function (getters, prefix) {
   return instance;
 };
 
+Router.prototype.create =
 Router.prototype.init = function () {
   var active = [];
   var state = {};
