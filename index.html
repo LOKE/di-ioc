@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>di-ioc</title>
+  </head>
+  <style>
+    html, body {
+      margin: 0;
+    }
+    body {
+      text-align: center;
+      max-width: 1300px;
+      margin: auto;
+      font-family: Palatino, Georgia, serif;
+      font-size: 18px;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      font-weight: normal;
+    }
+    * {
+      box-sizing: border-box;
+    }
+    .btn {
+      background: #949494;
+      border: none;
+      width: 280px;
+      height: 72px;
+      line-height: 72px;
+      display: inline-block;
+      margin: 10px;
+      color: white;
+      text-decoration: none;
+      transition: 0.1s background linear;
+      font-size: 24px;
+    }
+    .btn:hover {
+      background: #6E6E6E;
+    }
+    .btn.btn-primary {
+      background: #478157;
+    }
+    .btn.btn-primary:hover {
+      background: #275233;
+    }
+    .example {
+      text-align: left;
+      padding: 16px;
+    }
+    .example pre {
+      background: #f8f8f8;
+      font-family: Menlo, monospace;
+      padding: 16px;
+      margin: 0;
+      font-size: 14px;
+      line-height: 20px;
+      min-height: 230px;
+      color: #555;
+    }
+    .example pre.active {
+      background: #D5E8DA;
+    }
+    li.active {
+      cursor: pointer;
+      background-color: #B4C4B8 !important;
+    }
+    pre .code-module, pre .code-constructor {
+      color: #008081;
+    }
+    pre .code-var {
+      color: black;
+    }
+    pre .code-arg {
+      color: #5F6CB4
+    }
+    pre .code-require {
+      color: #43548A;
+    }
+    pre .code-string, pre .code-number {
+      color: #E00640;
+    }
+    pre .code-op {
+      color: black;
+    }
+    pre .code-keyword {
+      color: black;
+      font-weight: bold;
+    }
+
+    @media screen and (min-width: 800px) {
+      .col-container {
+        display: -webkit-flex;
+        display: flex;
+      }
+      .col-1 {
+        -webkit-flex: 1;
+        flex: 1;
+      }
+      .col-2 {
+        -webkit-flex: 2;
+        flex: 2;
+      }
+      .col-1, .col-2 {
+        margin-left: 10px;
+        margin-right: 10px;
+      }
+    }
+    .col-1, .col-2 {
+      margin-top: 1em;
+    }
+    .col-1:first-child, .col-2:first-child {
+      margin-left: 0;
+    }
+    .col-1:last-child, .col-2:last-child {
+      margin-right: 0;
+    }
+    .file-browser {
+      padding: 16px;
+      padding-left: 48px;
+      border: 2px solid #E6E6E6;
+      font-size: 16px;
+      line-height: 20px;
+      -webkit-user-select: none;
+    }
+    .file-browser .arrow {
+      background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABoAAAAMCAYAAAB8xa1IAAAAAXNSR0IArs4c6QAAAH1JREFUOBFjYICAaCD1G4hToHxqUDVAQ74DsTuyYQVAzn8g/gfE1LAMZAnIvD9AHAXEKKAQyKOGZXgtgdlIqWVEWUKpZSRZQq5lZFlCqmXIloBSL1mAUJxRxRKYy3BZRlVLcFlGE0uwWQbLjGTHCcxQXHQ/UAKWqUGlCdEAANSiPfMt2IzVAAAAAElFTkSuQmCC) no-repeat left center;
+      position: absolute;
+      left: -25px;
+      top: 0px;
+      width: 13px;
+      height: 18px;
+      background-size: 13px 6px;
+    }
+    .file-browser li {
+      margin-left: 0;
+      padding-left: 20px;
+    }
+    .file-browser ul {
+      padding-left: 0;
+      margin: 0;
+    }
+    .file-browser li.folder {
+      position: relative;
+      list-style: none;
+      background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACIAAAAcCAYAAAAEN20fAAAAAXNSR0IArs4c6QAAAL5JREFUSA3tl7ENgzAQRS8Rc1BkkCySNRgsdRRRsEJ2yARpYoSS/4uPkCtknbCLs/Q5kLD9eDRnM7MLMiIJ+e3MG+/dENcxYbW9ANv3Fsy7epLMhSCEeiGdF8z2K0vuh1ZAPgDpPWBKLORz7h4gsUZuINd85PMXMA+kP+HCjWuPZysgqRUQO9f+J9o/QGRCNYzIhGoYkQnVMCITqmFEJlTDiEyo0ggPVrVHIshUm0IMPAqwXWPbdmSbyL3WVvEP6DanT0EcgCAAAAAASUVORK5CYII=) no-repeat;
+      background-size: 17px 14px;
+    }
+    .file-browser li.file-js {
+      list-style: none;
+      background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAhdJREFUSA3tl6FOBDEQhg9CQkJCAgJBQJzC4ZBILBZ9BoPH3wvg4TlIUHcCgkDyBkvCAyBOgQD+r3SW2bbkctllMUwymXb6z/zddtrrDQbfsqTmqfRBOpN+dKTkIie54WjItnpTaVdkP+WZiAOuIMyiD1KbDFzhy1kCc/Zl4Qzr7wlv5NtloCMhFzk9B3ueFVKXpORHyOmJZ6w1Di9Z5fnBFu0Gz3KLRK1C/4lbLd8iwSuLgOdg1+P4m+zrHGwY9mXeqLxC8K18YHzlj6LP53mRb0/qxY8Hnszh0Un7UX3wVpQnsY/vXHostcnh25GaZDyZw5AFmxJXwhC/mmDPon/s/A0em7kbX7j5pIh0Ty9jlvqXqJS1MZMSwPnSL2Yvib+SbjpcqZnxZI5SVPSlxAfyp/FgWOq1GGMmxWWBBizZlBgMR5Iiu5amyQ/lM0nHMrAB2f+0BlLi0j3AeR5LjUjNINY3WwNqRwRWsuyhF0881AAxfG1JPJZxy282d8QsFuiTEmSToZjoV1J/oagb+lZ4NmaEwaZLSZDJc2ywd/tSLgbk/suECdypPZS+S4+k3FYjKf0N6YUUoqI0ZuIQ7F8l9eOsgn2BQTlKHmNtbjIv5jc79+lDsWxF9Yl8m0lyPaKl85w9fQjm4WWzwPIw6/LdRS5yeo7w2Puz5y171ueDfiK+uk64zPsghyP74WAWLDvr/+t/2j4Bqp2XfwFzOZIAAAAASUVORK5CYII=) no-repeat left center;
+      background-size: 15px 15px;
+    }
+  </style>
+  <body>
+    <div style="margin-top: 192px; margin-bottom: 96px">
+      <img src="logo@2x.png" width="77" height="75"/>
+      <h1 style="font-size: 72px; margin-top: 0.3em">di-ioc</h1>
+      <p>Dependency injection for Node.js apps</p>
+      <div style="background: #444; width: 300px; padding: 16px; margin: auto; color: white; font-size: 14px; font-family: Menlo">
+        npm install --save di-ioc
+      </div>
+    </div>
+    <div style="margin-bottom: 96px">
+      <a href="doc" class="btn btn-primary">Read the docs</a>
+      <a href="https://github.com/aantthony/di-ioc" class="btn">View on GitHub</a>
+    </div>
+    <div>
+      <h2>Example project structure:</h2>
+    </div>
+    <div class="example col-container">
+      <div class="col-1" style="position: relative; min-height: 300px;">
+        <div class="file-browser" style="position: absolute; top: 1em; left:0; right: 0;bottom:0;">
+          <ul>
+            <li class="folder"><div class="arrow"></div>bin
+              <ul>
+                <li file="bin_www" class="file-js">www</li>
+              </ul
+            </li>
+            <li class="folder"><div class="arrow"></div>lib
+              <ul>
+                <li class="folder"><div class="arrow"></div>app
+                  <ul>
+                    <li file="lib_app_server" class="file-js">server.js</li>
+                  </ul
+                </li>
+                <li class="folder"><div class="arrow"></div>models
+                  <ul>
+                    <li file="lib_models_user" class="file-js">user.js</li>
+                  </ul
+                </li>
+                <li class="folder"><div class="arrow"></div>inf
+                  <ul>
+                    <li file="lib_inf_db" class="file-js">db.js</li>
+                  </ul
+                </li>
+                <li file="lib_index" class="file-js">index.js</li>
+              </ul
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-2">
+        <div class="col-container">
+          <div class="col-1"><div class="filename">lib/index.js</div>
+            <pre id="lib_index"><span class="code-module">module</span>.exports = <span class="code-require">require</span>(<span class="code-string">'di-ioc'</span>)
+.create()
+.use(<span class="code-string">'./inf/*'</span>)
+.use(<span class="code-string">'./models/*'</span>)
+.use(<span class="code-string">'./app/*')</span>;
+            </pre>
+          </div>
+          <div class="col-1"><div class="filename">lib/app/server.js</div>
+            <pre id="lib_app_server"><span class=".">module</span>.exports = User <span class="code-op">=></span> {
+  <span class="code-keyword">return</span> express()
+  .get(<span class="code-string">'/users'</span>, (req, res, next) <span class="code-op">=></span> {
+    User.find({}, (err, users) <span class="code-op">=></span> {
+      if (err) <span class="code-keyword">return</span> next(err);
+      res.json(users);
+    });
+  }));
+}
+            </pre>
+          </div>
+        </div>
+        <div class="col-container" style="padding-top: 32px;">
+          <div class="col-1"><div class="filename">lib/models/user.js</div>
+            <pre id="lib_models_user"><span class="code-module">module</span>.exports = db <span class="code-op">=></span> {
+  <span class="code-keyword">return</span> db.model(<span class="code-string">'User'</span>, {
+    name: <span class="code-constructor">String</span>,
+    email: <span class="code-constructor">String</span>
+  }
+};
+            </pre>
+          </div>
+          <div class="col-1"><div class="filename">bin/www.js</div>
+            <pre id="bin_www"><span class="code-var">var</span> Example = <span class="code-require">require</span>(<span class="code-string">'./lib'</span>);
+<span class="code-var">var</span> example <span class="code-op">=</span> Example.create();
+example.app.server.listen(<span class="code-number">8080</span>);
+
+            </pre>
+          </div>
+        </div>
+        <div class="col-container" style="padding-top: 32px;">
+          <div class="col-1"><div class="filename">lib/models/user.js</div>
+            <pre id="lib_inf_db"><span class="code-module">module</span>.exports = () {
+  <span class="code-var">var</span> mongoose = <span class="code-require">require</span>(<span class="code-string">'mongoose'</span>);
+  mongoose.connect(<span class="code-string">'mongodb://localhost/test'</span>);
+  <span class="code-keyword">return</span> mongoose;
+}
+            </pre>
+          </div>
+        </div>
+      </div>
+    </div>
+    <br style="clear: both" />
+    <small style="padding-top: 96px; display:block; color: #888; height: 220px;">
+      Copyright © 2015 Anthony Foster.
+      <br />
+      <p><a href="https://www.npmjs.com/package/di-ioc"><img src="https://camo.githubusercontent.com/2e5a7b09eba566161e303908d762bc104c432dc6/68747470733a2f2f696d672e736869656c64732e696f2f6e706d2f762f64692d696f632e737667" alt="NPM Version" data-canonical-src="https://img.shields.io/npm/v/di-ioc.svg" style="max-width:100%;"></a>
+<a href="https://travis-ci.org/aantthony/di-ioc"><img src="https://camo.githubusercontent.com/0448b95d18d39e20b90b6fe2c81393ccc86efec5/68747470733a2f2f696d672e736869656c64732e696f2f7472617669732f61616e7474686f6e792f64692d696f632f6d61737465722e737667" alt="Build Status" data-canonical-src="https://img.shields.io/travis/aantthony/di-ioc/master.svg" style="max-width:100%;"></a>
+<a href="https://coveralls.io/r/aantthony/di-ioc?branch=master"><img src="https://camo.githubusercontent.com/2a09c86643af99c0b0c5449d6abaeae402aab9ad/68747470733a2f2f696d672e736869656c64732e696f2f636f766572616c6c732f61616e7474686f6e792f64692d696f632f6d61737465722e737667" alt="Coverage Status" data-canonical-src="https://img.shields.io/coveralls/aantthony/di-ioc/master.svg" style="max-width:100%;"></a>
+<a href="https://www.npmjs.com/package/di-ioc"><img src="https://camo.githubusercontent.com/67fa33c11d1338413e5e2e40cb9ec3fe8dc10d42/68747470733a2f2f696d672e736869656c64732e696f2f6e706d2f646d2f64692d696f632e737667" alt="NPM Downloads" data-canonical-src="https://img.shields.io/npm/dm/di-ioc.svg" style="max-width:100%;"></a>
+<a href="https://www.npmjs.com/package/di-ioc"><img src="https://camo.githubusercontent.com/9e3614d4fc19c58f963619ed5f474fa8ed2876d0/68747470733a2f2f696d672e736869656c64732e696f2f6e706d2f6c2f64692d696f632e737667" alt="License" data-canonical-src="https://img.shields.io/npm/l/di-ioc.svg" style="max-width:100%;"></a></p>
+    </small>
+    <script>
+    var selectedPre = null;
+    var selectedLi  = null;
+    function select(file, li) {
+      if (selectedPre) {
+        selectedPre.classList.remove('active');
+        selectedPre = null;
+      }
+      if (selectedLi) {
+        selectedLi.classList.remove('active');
+        selectedLi = null;
+      }
+      if (!file) return;
+      var pre = document.getElementById(file);
+      pre.classList.add('active');
+      li.classList.add('active');
+      selectedPre = pre;
+      selectedLi = li;
+    }
+    [].map.call(document.querySelectorAll('*[file]'), function (node) {
+      var file = node.getAttribute('file');
+      node.addEventListener('mouseover', function () { select(file, node); });
+      node.addEventListener('mouseout', function () { select(null); });
+    });
+    </script>
+  </body>
+</html>
