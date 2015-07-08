@@ -4,6 +4,7 @@
   "description": "Node.js dependency injection.",
   "main": "index.js",
   "scripts": {
+    "build-doc": "mkdir -p out; cp node_modules/spec-md/css/* out; spec-md doc/index.md > out/index.html",
     "lint": "eslint --ignore-path .gitignore .",
     "test": "mocha test && ([[ -z $TRAVIS_JOB_ID ]] || npm run travis)",
     "coverage": "mkdir -p coverage && mocha -r blanket -R html-cov > coverage/index.html",
@@ -67,6 +68,7 @@
     "eslint": "^0.24.0",
     "expect": "^1.6.0",
     "mocha": "^2.2.5",
-    "mocha-lcov-reporter": "0.0.2"
+    "mocha-lcov-reporter": "0.0.2",
+    "spec-md": "^0.3.7"
   }
 }
