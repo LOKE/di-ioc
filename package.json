@@ -1,6 +1,6 @@
 {
   "name": "di-ioc",
-  "version": "1.5.1",
+  "version": "1.5.2",
   "description": "Node.js dependency injection.",
   "main": "index.js",
   "scripts": {
@@ -70,5 +70,9 @@
     "mocha": "^2.2.5",
     "mocha-lcov-reporter": "0.0.2",
     "spec-md": "^0.3.7"
+  },
+  "directories": {
+    "doc": "doc",
+    "test": "test"
   }
 }
