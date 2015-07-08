@@ -210,10 +210,10 @@
             </pre>
           </div>
           <div class="col-1"><div class="filename">lib/app/server.js</div>
-            <pre id="lib_app_server"><span class=".">module</span>.exports = User <span class="code-op">=></span> {
+            <pre id="lib_app_server"><span class=".">module</span>.exports = User <span class="code-op">=&gt;</span> {
   <span class="code-keyword">return</span> express()
-  .get(<span class="code-string">'/users'</span>, (req, res, next) <span class="code-op">=></span> {
-    User.find({}, (err, users) <span class="code-op">=></span> {
+  .get(<span class="code-string">'/users'</span>, (req, res, next) <span class="code-op">=&gt;</span> {
+    User.find({}, (err, users) <span class="code-op">=&gt;</span> {
       if (err) <span class="code-keyword">return</span> next(err);
       res.json(users);
     });
@@ -224,7 +224,7 @@
         </div>
         <div class="col-container" style="padding-top: 32px;">
           <div class="col-1"><div class="filename">lib/models/user.js</div>
-            <pre id="lib_models_user"><span class="code-module">module</span>.exports = db <span class="code-op">=></span> {
+            <pre id="lib_models_user"><span class="code-module">module</span>.exports = db <span class="code-op">=&gt;</span> {
   <span class="code-keyword">return</span> db.model(<span class="code-string">'User'</span>, {
     name: <span class="code-constructor">String</span>,
     email: <span class="code-constructor">String</span>
@@ -242,7 +242,7 @@ example.app.server.listen(<span class="code-number">8080</span>);
         </div>
         <div class="col-container" style="padding-top: 32px;">
           <div class="col-1"><div class="filename">lib/models/user.js</div>
-            <pre id="lib_inf_db"><span class="code-module">module</span>.exports = () {
+            <pre id="lib_inf_db"><span class="code-module">module</span>.exports = () <span class="code-op">=&gt;</span> {
   <span class="code-var">var</span> mongoose = <span class="code-require">require</span>(<span class="code-string">'mongoose'</span>);
   mongoose.connect(<span class="code-string">'mongodb://localhost/test'</span>);
   <span class="code-keyword">return</span> mongoose;
