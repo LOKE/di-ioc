@@ -1,0 +1,7 @@
+doc/
+test/
+.gitignore
+.travis.yml
+example.js
+index.html
+logo@2x.png
