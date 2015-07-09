@@ -106,7 +106,7 @@ Router.prototype.init = function () {
       inject : function (defn, local) {
         local = local || {};
         var args = annotate(defn).map(function (name) {
-          if (local[name]) return local[name];
+          if (local[name] !== undefined) return local[name];
           if (state[name]) return state[name]();
           throw new Error('Missing dependency: ' + name);
         });
