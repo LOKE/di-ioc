@@ -18,6 +18,7 @@ function Router(requireFn) {
 
 function set(router, type, path, factory) {
   if (type !== TYPE_INTERFACE) factory = factory || $private(router).require(path);
+  if (factory instanceof Router) type = TYPE_SUBROUTER;
   var deps = typeof factory === 'function' && annotate(factory) || [];
   var name = path.replace('./', '').replace(/\.js$/, '').replace(/-(.)/g, function (s, first) {
     return first.toUpperCase();
