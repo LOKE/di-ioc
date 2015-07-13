@@ -96,9 +96,16 @@ Router.prototype.build = function (getters, prefix) {
 };
 
 Router.prototype.create =
-Router.prototype.init = function () {
+Router.prototype.init = function (options) {
   var active = [];
   var state = {};
+  if (options) {
+    Object.keys(options).forEach(function (key) {
+      var value = options[key];
+      var getter = state[key] = function () { return value; };
+      getter.longName = '<parameter: ' + key + '>';
+    });
+  }
   $private(state).active = active;
 
   state.ioc = function () {
