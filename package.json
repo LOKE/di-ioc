@@ -6,7 +6,7 @@
   "scripts": {
     "build-doc": "mkdir -p out; cp node_modules/spec-md/css/* out; spec-md doc/index.md > out/index.html",
     "lint": "eslint --ignore-path .gitignore .",
-    "test": "mocha test && ([[ -z $TRAVIS_JOB_ID ]] || npm run travis)",
+    "test": "mocha test",
     "coverage": "mkdir -p coverage && mocha -r blanket -R html-cov > coverage/index.html",
     "travis": "mocha -r blanket -R mocha-lcov-reporter | coveralls"
   },
