@@ -16,6 +16,7 @@ function Router(requireFn) {
   $private(this).defs = [];
 }
 
+
 function set(router, type, path, factory) {
   if (type !== TYPE_INTERFACE) factory = factory || $private(router).require(path);
   if (factory instanceof Router) type = TYPE_SUBROUTER;
