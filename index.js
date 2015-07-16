@@ -5,6 +5,7 @@ var annotate = require('fn-annotate');
 
 Router.create = module.exports = Router;
 
+
 var TYPE_SINGLETON = 'singleton';
 var TYPE_TRANSIENT = 'transient';
 var TYPE_INTERFACE = 'interface';
