@@ -13,6 +13,7 @@ var util = ioc.create()
   };
 });
 
+
 // Application submodule
 var app = ioc.create()
 .define('greet', function (random) {
