@@ -1,6 +1,6 @@
 'use strict';
 
-var $private = require('private').create();
+var $private = require('private-accessor').create();
 var annotate = require('fn-annotate');
 
 Router.create = module.exports = Router;
