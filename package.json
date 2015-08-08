@@ -59,7 +59,7 @@
   },
   "homepage": "http://af.id.au/di-ioc/",
   "dependencies": {
-    "fn-annotate": "^1.0.1",
+    "fn-annotate": "^1.1.1",
     "private": "https://github.com/aantthony/private/archive/v1.1.0.tar.gz"
   },
   "devDependencies": {
