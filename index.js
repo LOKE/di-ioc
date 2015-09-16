@@ -54,7 +54,13 @@ function Interface(def, longName) {
   this.longName = longName;
 }
 
-function ensureCanLoad(def, scope, siblings, path) {
+function ensureCanLoad(def, scope, siblings, prefix, path) {
+  path = path || [];
+  if (~path.indexOf(def.name)) {
+    var serviceNames = [prefix.join('.')].concat(path.slice(1)).concat([def.name, '...']);
+    throw new Error('Circular dependency: ' + serviceNames.join(' -> '));
+  }
+
   return def.deps.every(function (name) {
     if (scope[name]) return true;
     var sibling;
@@ -64,13 +70,7 @@ function ensureCanLoad(def, scope, siblings, path) {
         break;
       }
     }
-    if (sibling) {
-      if (~path.indexOf(sibling.name)) {
-        throw new Error('Circular dependency: ' + path.join(' -> ') + ' -> ' + sibling.name + ' -> ...');
-      }
-      return ensureCanLoad(sibling, scope, siblings, path.concat([sibling.name]));
-    }
-
+    if (sibling) return ensureCanLoad(sibling, scope, siblings, prefix, path.concat([def.name]));
     throw new Error('Unknown dependency: ' + name + ' required by ' + path.join('.'));
   });
 }
@@ -208,7 +208,7 @@ Router.prototype.define = function (name, defn) {
 };
 
 Router.prototype.constant = function (name, value) {
-  this.singleton(name, function () {
+  return this.singleton(name, function () {
     return value;
   });
 };
