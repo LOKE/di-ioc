@@ -3,6 +3,11 @@
 var $private = require('private-accessor').create();
 var annotate = require('fn-annotate');
 
+function applyNew(ctor, args) {
+  var instance = Object.create(ctor.prototype);
+  return ctor.apply(instance, args) || instance;
+}
+
 Router.create = module.exports = Router;
 
 var TYPE_SINGLETON = 'singleton';
@@ -10,9 +15,16 @@ var TYPE_TRANSIENT = 'transient';
 var TYPE_INTERFACE = 'interface';
 var TYPE_SUBROUTER = 'use';
 
-function Router(requireFn) {
-  if (!(this instanceof Router)) return new Router(requireFn);
-  $private(this).require = requireFn;
+function Router(module) {
+  var requireFn;
+  if (module && module.require) {
+    requireFn = module.require.bind(module);
+  } else if (typeof module === 'function') {
+    // legacy:
+    requireFn = module;
+  }
+  if (!(this instanceof Router)) return new Router(module);
+  $private(this).require = requireFn || null;
   $private(this).defs = [];
 }
 
@@ -29,7 +41,10 @@ function set(router, type, path, factory) {
 
 [TYPE_SINGLETON, TYPE_TRANSIENT, TYPE_INTERFACE, TYPE_SUBROUTER]
 .forEach(function (type) {
-  Router.prototype[type] = function (path, fn) { set(this, type, path, fn); return this; };
+  Router.prototype[type] = function (path, fn) {
+    set(this, type, path, fn);
+    return this;
+  };
 });
 
 function Interface(def, longName) {
@@ -37,15 +52,36 @@ function Interface(def, longName) {
   this.longName = longName;
 }
 
+function ensureCanLoad(def, scope, siblings, path) {
+  return def.deps.every(function (name) {
+    if (scope[name]) return true;
+    var sibling;
+    for (var i = 0; i < siblings.length; i++) {
+      if (siblings[i].name === name) {
+        sibling = siblings[i];
+        break;
+      }
+    }
+    if (sibling) {
+      if (~path.indexOf(sibling.name)) {
+        throw new Error('Circular dependency: ' + path.join(' -> ') + ' -> ' + sibling.name + ' -> ...');
+      }
+      return ensureCanLoad(sibling, scope, siblings, path.concat([sibling.name]));
+    }
+
+    throw new Error('Unknown dependency: ' + name + ' required by ' + path.join('.'));
+  });
+}
+
 Router.prototype.build = function (getters, prefix) {
-  var instance = {};
-  $private(this).defs.forEach(function (def) {
+  var container = {};
+  var defs = $private(this).defs;
+  defs.forEach(function (def) {
     var longName = prefix.concat([def.name]);
-    if (def.type === TYPE_SUBROUTER) return instance[def.name] = def.factory.build(getters, longName);
-    if (def.type === TYPE_INTERFACE) return  getters[def.name] = new Interface(def, longName);
-    def.deps.forEach(function (name) {
-      if (!getters[name]) throw new Error('Unknown dependency: ' + name + ' required by ' + longName.join('.')); }
-    );
+    if (def.type === TYPE_SUBROUTER) return container[def.name] = def.factory.build(getters, longName);
+    if (def.type === TYPE_INTERFACE) return   getters[def.name] = new Interface(def, longName);
+
+    ensureCanLoad(def, getters, defs, longName);
 
     var existing = getters[def.name];
     if (existing && !(existing instanceof Interface)) {
@@ -66,8 +102,7 @@ Router.prototype.build = function (getters, prefix) {
         return getter();
       });
 
-      var newInstance = {};
-      newInstance = def.factory.apply(newInstance, args) || newInstance;
+      var newInstance = applyNew(def.factory, args);
 
       if (def.type === TYPE_SINGLETON) {
         sharedInstance = newInstance;
@@ -90,9 +125,9 @@ Router.prototype.build = function (getters, prefix) {
 
     get.longName = longName;
 
-    Object.defineProperty(instance, def.name, { enumerable : true, get: get});
+    Object.defineProperty(container, def.name, { enumerable : true, get: get});
   });
-  return instance;
+  return container;
 };
 
 Router.prototype.create =
@@ -165,8 +200,13 @@ Router.prototype.inject = function (name, services) {
   return this.factory(name)(services);
 };
 
-// Backwards compatibility alias:
 Router.prototype.define = function (name, defn) {
   if (defn instanceof Router) return this.use(name, defn);
   return this.singleton(name, defn);
+};
+
+Router.prototype.constant = function (name, value) {
+  this.singleton(name, function () {
+    return value;
+  });
 };

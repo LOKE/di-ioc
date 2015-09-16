@@ -24,30 +24,6 @@
   "engines": {
     "node": ">=0.11.0"
   },
-  "eslintConfig": {
-    "env": {
-      "node": true,
-      "mocha": true
-    },
-    "rules": {
-      "consistent-return": 0,
-      "no-return-assign": 0,
-      "key-spacing": 0,
-      "no-multi-spaces": 0,
-      "no-use-before-define": [
-        2,
-        "nofunc"
-      ],
-      "curly": [
-        2,
-        "multi-line"
-      ],
-      "quotes": [
-        2,
-        "single"
-      ]
-    }
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/aantthony/di-ioc.git"
@@ -64,10 +40,10 @@
   },
   "devDependencies": {
     "blanket": "^1.1.7",
-    "coveralls": "^2.11.2",
-    "eslint": "^0.24.0",
-    "expect": "^1.6.0",
-    "mocha": "^2.2.5",
+    "coveralls": "^2.11.4",
+    "eslint": "^1.4.3",
+    "expect": "^1.10.0",
+    "mocha": "^2.3.2",
     "mocha-lcov-reporter": "0.0.2",
     "spec-md": "^0.3.7"
   },
