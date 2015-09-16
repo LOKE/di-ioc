@@ -2,6 +2,8 @@
 
 var $private = require('private-accessor').create();
 var annotate = require('fn-annotate');
+// Find native promise constructor if available:
+var P = typeof Promise === 'undefined' ? require('es6-promise').Promise : Promise;
 
 function applyNew(ctor, args) {
   var instance = Object.create(ctor.prototype);
@@ -166,7 +168,7 @@ Router.prototype.init = function (options) {
     }).filter(Boolean);
 
     active.splice(0, active.length);
-    return Promise.all(results);
+    return P.all(results);
   };
   return instance;
 };
