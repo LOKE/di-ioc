@@ -1,6 +1,6 @@
 {
   "name": "di-ioc",
-  "version": "1.6.1",
+  "version": "1.7.0",
   "description": "Node.js dependency injection.",
   "main": "index.js",
   "scripts": {
