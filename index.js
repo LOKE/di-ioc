@@ -71,7 +71,7 @@ function ensureCanLoad(def, scope, siblings, prefix, path) {
       }
     }
     if (sibling) return ensureCanLoad(sibling, scope, siblings, prefix, path.concat([def.name]));
-    throw new Error('Unknown dependency: ' + name + ' required by ' + path.join('.'));
+    throw new Error('Unknown dependency: ' + name + ' required by ' + prefix.join('.') + ' ' + path.join('.'));
   });
 }
 
@@ -93,15 +93,19 @@ Router.prototype.build = function (getters, prefix) {
     var validate = existing && existing.validate;
 
     var sharedInstance;
-    var get = getters[def.name] = function () {
+    var get = getters[def.name] = function (locals) {
       if (sharedInstance) return sharedInstance;
 
       var args = def.deps.map(function (name) {
+        if (locals) {
+          var local = locals[name];
+          if (local) return local;
+        }
         var getter = getters[name];
         if (getter instanceof Interface) {
           throw new Error('Interface ' + getter.longName.join('.') + ' has no implementation, but is required by ' + longName.join('.'));
         }
-        return getter();
+        return getter(locals);
       });
 
       var newInstance = applyNew(def.factory, args);
@@ -152,7 +156,7 @@ Router.prototype.init = function (options) {
         local = local || {};
         var args = annotate(defn).map(function (name) {
           if (local[name] !== undefined) return local[name];
-          if (state[name]) return state[name]();
+          if (state[name]) return state[name](local);
           throw new Error('Missing dependency: ' + name);
         });
         var newInstance = {};
