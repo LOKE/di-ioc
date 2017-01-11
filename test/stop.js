@@ -2,6 +2,7 @@
 
 var expect = require('expect');
 var ioc = require('../');
+var P = typeof Promise === 'undefined' ? require('es6-promise').Promise : Promise;
 
 describe('.stop()', function () {
   it('should call stop on all active instances', function (done) {
@@ -10,7 +11,7 @@ describe('.stop()', function () {
     .singleton('a', function () {
       return {stop: function () {
         stopA++;
-        return Promise.resolve();
+        return P.resolve();
       }};
     })
     .singleton('b', function () {
