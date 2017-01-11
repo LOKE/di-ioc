@@ -6,20 +6,7 @@
   "scripts": {
     "build-doc": "mkdir -p out; cp node_modules/spec-md/css/* out; spec-md doc/index.md > out/index.html",
     "lint": "eslint --ignore-path .gitignore .",
-    "test": "mocha test && ([[ -z $TRAVIS_JOB_ID ]] || npm run travis)",
-    "coverage": "mkdir -p coverage && mocha -r blanket -R html-cov > coverage/index.html",
-    "travis": "mocha -r blanket -R mocha-lcov-reporter | coveralls"
-  },
-  "config": {
-    "blanket": {
-      "pattern": [
-        ""
-      ],
-      "data-cover-never": [
-        "node_modules",
-        "test"
-      ]
-    }
+    "test": "mocha test"
   },
   "engines": {
     "node": ">=0.10.0"
@@ -40,12 +27,9 @@
     "private-accessor": "^1.1.1"
   },
   "devDependencies": {
-    "blanket": "^1.1.7",
-    "coveralls": "^2.11.4",
     "eslint": "^1.4.3",
     "expect": "^1.10.0",
     "mocha": "^2.3.2",
-    "mocha-lcov-reporter": "0.0.2",
     "spec-md": "^0.3.7"
   },
   "directories": {
