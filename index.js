@@ -6,7 +6,7 @@ var annotate = require('fn-annotate');
 var P = typeof Promise === 'undefined' ? require('es6-promise').Promise : Promise;
 
 function applyNew(ctor, args) {
-  var instance = Object.create(ctor.prototype);
+  var instance = Object.create(ctor.prototype || {});
   return ctor.apply(instance, args) || instance;
 }
 
