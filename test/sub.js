@@ -8,16 +8,18 @@ describe('.use()', function () {
     var a = ioc.create();
     var b = ioc.create();
     a.use('b', b);
-    expect(a.init().b).toEqual({});
+    const container = a.init();
+    expect(typeof container.b).toEqual('object');
   });
+
   it('should be able to mount the same instance twice', function () {
     var a = ioc.create();
     var b = ioc.create();
     a.use('b', b);
     a.use('c', b);
     var app = a.init();
-    expect(app.b).toEqual({});
-    expect(app.c).toEqual({});
+    expect(typeof app.b).toEqual('object');
+    expect(typeof app.c).toEqual('object');
     expect(app.c).toNotBe(app.b);
   });
 });
