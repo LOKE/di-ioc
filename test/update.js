@@ -20,4 +20,17 @@ describe('.update()', () => {
     expect(app2.test).toEqual({value: 1});
     expect(app2.test).toEqual({value: 2});
   });
+
+  it('should update nested', () => {
+    let i = 0;
+    const sub = ioc.create()
+    .singleton('b', () => ({value: i++}));
+
+    const root = ioc.create().use('a', sub);
+    root.update('a.b', { type: 'transient '});
+    const app = root.init();
+
+    expect(app.a.b).toEqual({value: 0});
+    expect(app.a.b).toEqual({value: 1});
+  });
 });
