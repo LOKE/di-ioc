@@ -1,33 +1,24 @@
 {
   "name": "di-ioc",
-  "version": "1.8.2",
+  "version": "2.0.0",
   "description": "Node.js dependency injection.",
-  "main": "index.js",
+  "main": "lib/index.js",
   "scripts": {
     "build-doc": "mkdir -p out; cp node_modules/spec-md/css/* out; spec-md doc/index.md > out/index.html",
     "lint": "eslint --ignore-path .gitignore .",
     "test": "mocha test"
   },
   "engines": {
-    "node": ">=0.10.0"
+    "node": ">=6.0.0"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/aantthony/di-ioc.git"
-  },
-  "author": "Anthony Foster",
+  "author": "Anthony Foster + LOKE",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/aantthony/di-ioc/issues"
-  },
-  "homepage": "http://af.id.au/di-ioc/",
   "dependencies": {
-    "es6-promise": "^4.0.5",
     "fn-annotate": "^1.1.1",
     "private-accessor": "^1.1.1"
   },
   "devDependencies": {
-    "eslint": "^1.4.3",
+    "eslint": "^4.8.0",
     "expect": "^1.20.2",
     "mocha": "^3.2.0",
     "spec-md": "^0.3.7"
